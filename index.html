@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
-  <meta name="author" content="John Doe">
+  <title>metebee</title>
+  <meta name="author" content="zhang dong">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-  <meta property="og:site_name" content="Hexo"/>
+  <meta property="og:site_name" content="metebee"/>
 
   
     <meta property="og:image" content="undefined"/>
   
 
   <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="metebee" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   
@@ -27,15 +27,17 @@
 
 <body>
   <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Hexo</a></h1>
+  <h1><a href="/">metebee</a></h1>
   <h2><a href="/"></a></h2>
 </div>
 <nav id="main-nav" class="alignright">
   <ul>
     
-      <li><a href="/">Home</a></li>
+      <li><a href="/">主页</a></li>
     
-      <li><a href="/archives">Archives</a></li>
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="//about">关于</a></li>
     
   </ul>
   <div class="clearfix"></div>
@@ -44,6 +46,75 @@
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-06-07T03:32:52.000Z"><a href="/2016/06/07/第一个/">2016-06-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/06/07/第一个/">flume-kafka-storm-redis集群搭建</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>zookeeper3.4.8、kafka0.9.0.1、jdk8、flume1.6.0、storm0.9.6、redis3.2</p>
+<h2 id="配置flume"><a href="#配置flume" class="headerlink" title="配置flume"></a>配置flume</h2><h3 id="配置flume-conf-tomcat-conf"><a href="#配置flume-conf-tomcat-conf" class="headerlink" title="配置flume/conf/tomcat.conf"></a>配置flume/conf/tomcat.conf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">agent1.sources = ngrinder</span><br><span class="line">agent1.sources.ngrinder.type = exec</span><br><span class="line">agent1.sources.ngrinder.command = tail -F /data/boot/logcase/logcase.log</span><br><span class="line">agent1.sources.ngrinder.channels = mc1</span><br><span class="line"></span><br><span class="line">agent1.channels = mc1</span><br><span class="line">agent1.channels.mc1.type = memory</span><br><span class="line">agent1.channels.mc1.capacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sinks = avro-sink</span><br><span class="line">agent1.sinks.avro-sink.type = org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line">agent1.sinks.avro-sink.topic = mytopic</span><br><span class="line">agent1.sinks.avro-sink.brokerList = 127.0.0.1:9092</span><br><span class="line">agent1.sinks.avro-sink.requiredAcks = 1</span><br><span class="line">agent1.sinks.avro-sink.batchSize = 20</span><br><span class="line">agent1.sinks.avro-sink.channel = mc1</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/06/07/第一个/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-06-06T03:32:52.000Z"><a href="/2016/06/06/My-New-Post/">2016-06-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/06/06/My-New-Post/">My New Post</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -94,7 +165,7 @@
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="search" name="q" results="0" placeholder="搜索">
     <input type="hidden" name="q" value="site:yoursite.com">
   </form>
 </div>
@@ -102,12 +173,27 @@
   
 
   
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/flume/">flume</a><small>1</small></li>
+  
+    <li><a href="/tags/kafka/">kafka</a><small>1</small></li>
+  
+    <li><a href="/tags/redis/">redis</a><small>1</small></li>
+  
+    <li><a href="/tags/storm/">storm</a><small>1</small></li>
+  
+  </ul>
+</div>
+
 </aside>
     <div class="clearfix"></div>
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 John Doe
+  &copy; 2016 zhang dong
   
 </div>
 <div class="clearfix"></div></footer>
