@@ -3,13 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>about | metebee</title>
+  <title>系统安全 | metebee</title>
   <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="XSS攻击：植入脚本
+解决办法：html代码转义    jstl标签   escapeXml 设置为true">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="about"/>
+  <meta property="og:title" content="系统安全"/>
   <meta property="og:site_name" content="metebee"/>
 
   
@@ -45,26 +48,43 @@
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
   <div class="post-content">
     <header>
       
+        <div class="icon"></div>
+        <time datetime="2015-06-07T03:22:38.000Z"><a href="/2015/06/07/系统安全/">2015-06-07</a></time>
+      
       
   
-    <h1 class="title">about</h1>
+    <h1 class="title">系统安全</h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <h3 id="XSS攻击："><a href="#XSS攻击：" class="headerlink" title="XSS攻击："></a>XSS攻击：</h3><p>植入脚本</p>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>html代码转义    jstl标签   escapeXml 设置为true<br><a id="more"></a></p>
+<h3 id="CRSF攻击："><a href="#CRSF攻击：" class="headerlink" title="CRSF攻击："></a>CRSF攻击：</h3><p>控制cookie  ，漏洞系统 <img>的链接为http请求  get方式作用,结合XSS可以实现post</p>
+<h3 id="解决办法：-1"><a href="#解决办法：-1" class="headerlink" title="解决办法："></a>解决办法：</h3><p>cookies 设置HttpOnly；表单中增加token，后台生成；Referer识别（HTTP头）</p>
+<h3 id="SQL注入攻击："><a href="#SQL注入攻击：" class="headerlink" title="SQL注入攻击："></a>SQL注入攻击：</h3><p>or 1=1</p>
+<h3 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h3><p>orm框架</p>
+<h3 id="文件上传漏洞："><a href="#文件上传漏洞：" class="headerlink" title="文件上传漏洞："></a>文件上传漏洞：</h3><p>脚本文件</p>
+<h3 id="解决：-1"><a href="#解决：-1" class="headerlink" title="解决："></a>解决：</h3><p>限制文件大小，上传文件要重新命名，上传者无法猜到上传的路径；很多类型的文件可以根据前几个字节判定什么类型（魔数）；图片可以缩放，破坏结构</p>
+<h3 id="DDos攻击："><a href="#DDos攻击：" class="headerlink" title="DDos攻击："></a>DDos攻击：</h3><p>借助公网，将数量庞大的的计算机设备联合起来作为攻击平台，对一个或多个目标发动攻击，从而瘫痪目标主机。（肉鸡）<br>1.SYNFlood：TCP连接三次握手，第三次服务收不到客户机的ACK，会重试，对应的客户机ip放入等待队列，大量数据占用服务资源。攻击者伪造大量ip，请求server<br>2.DNS QueryFlood：向被攻击的服务器发送海量的域名解析请求，通常请求解析的域名是随机生成的，大部分不存在，向上请求，造成堆积<br>3.CC攻击HTTP Flood：控制肉鸡或者大量匿名的http代理，请求网站，加速系统资源消耗</p>
+
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/XSS攻击/">XSS攻击</a>, <a href="/tags/CRSF攻击/">CRSF攻击</a>, <a href="/tags/SQL注入攻击/">SQL注入攻击</a>, <a href="/tags/文件上传漏洞/">文件上传漏洞</a>, <a href="/tags/DDos攻击/">DDos攻击</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -105,7 +125,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://yoursite.com/about/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://yoursite.com/2015/06/07/系统安全/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>

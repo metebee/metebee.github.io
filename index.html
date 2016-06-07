@@ -52,25 +52,26 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-06-07T03:32:52.000Z"><a href="/2016/06/07/第一个/">2016-06-07</a></time>
+        <time datetime="2016-06-07T04:38:43.000Z"><a href="/2016/06/07/电商秒杀/">2016-06-07</a></time>
       
       
   
-    <h1 class="title"><a href="/2016/06/07/第一个/">flume-kafka-storm-redis集群搭建</a></h1>
+    <h1 class="title"><a href="/2016/06/07/电商秒杀/">电商秒杀</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>zookeeper3.4.8、kafka0.9.0.1、jdk8、flume1.6.0、storm0.9.6、redis3.2</p>
-<h2 id="配置flume"><a href="#配置flume" class="headerlink" title="配置flume"></a>配置flume</h2><h3 id="配置flume-conf-tomcat-conf"><a href="#配置flume-conf-tomcat-conf" class="headerlink" title="配置flume/conf/tomcat.conf"></a>配置flume/conf/tomcat.conf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">agent1.sources = ngrinder</span><br><span class="line">agent1.sources.ngrinder.type = exec</span><br><span class="line">agent1.sources.ngrinder.command = tail -F /data/boot/logcase/logcase.log</span><br><span class="line">agent1.sources.ngrinder.channels = mc1</span><br><span class="line"></span><br><span class="line">agent1.channels = mc1</span><br><span class="line">agent1.channels.mc1.type = memory</span><br><span class="line">agent1.channels.mc1.capacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sinks = avro-sink</span><br><span class="line">agent1.sinks.avro-sink.type = org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line">agent1.sinks.avro-sink.topic = mytopic</span><br><span class="line">agent1.sinks.avro-sink.brokerList = 127.0.0.1:9092</span><br><span class="line">agent1.sinks.avro-sink.requiredAcks = 1</span><br><span class="line">agent1.sinks.avro-sink.batchSize = 20</span><br><span class="line">agent1.sinks.avro-sink.channel = mc1</span><br></pre></td></tr></table></figure>
+        <p>活跃用户处理机制   将过载保护设置在CGI入口层</p>
+<p>随心所欲</p>
+<p>当我们的用户量逐步上升，系统依然出现吃紧和性能跟不上的阶段。<br>
       
     </div>
     <footer>
       
         
           <div class="alignleft">
-            <a href="/2016/06/07/第一个/#more" class="more-link">Read More</a>
+            <a href="/2016/06/07/电商秒杀/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -89,21 +90,27 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-06-06T03:32:52.000Z"><a href="/2016/06/06/My-New-Post/">2016-06-06</a></time>
+        <time datetime="2016-06-07T04:36:26.000Z"><a href="/2016/06/07/javanio/">2016-06-07</a></time>
       
       
   
-    <h1 class="title"><a href="/2016/06/06/My-New-Post/">My New Post</a></h1>
+    <h1 class="title"><a href="/2016/06/07/javanio/">javanio</a></h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <p>Channel的实现 </p>
+<p>这些是Java NIO中最重要的通道的实现： </p>
+<p>FileChannel：从文件中读写数据。<br>DatagramChannel：能通过UDP读写网络中的数据。<br>SocketChannel：能通过TCP读写网络中的数据。<br>ServerSocketChannel：可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2016/06/07/javanio/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -121,30 +128,291 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-06-05T13:51:28.000Z"><a href="/2016/06/05/hello-world/">2016-06-05</a></time>
+        <time datetime="2016-06-07T04:25:45.000Z"><a href="/2016/06/07/redis/">2016-06-07</a></time>
       
       
   
-    <h1 class="title"><a href="/2016/06/05/hello-world/">Hello World</a></h1>
+    <h1 class="title"><a href="/2016/06/07/redis/">redis</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
+        <h2 id="Redis实现分布式锁思路"><a href="#Redis实现分布式锁思路" class="headerlink" title="Redis实现分布式锁思路"></a>Redis实现分布式锁思路</h2><p>　　　　思路很简单，主要用到的redis函数是setnx()，这个应该是实现分布式锁最主要的函数。首先是将某一任务标识名（这里用Lock:order作为标识名的例子）作为键存到redis里，并为其设个过期时间，如果是还有Lock:order请求过来，先是通过setnx()看看是否能将Lock:order插入到redis里，可以的话就返回true，不可以就返回false。当然，在我的代码里会比这个思路复杂一些，我会在分析代码时进一步说明。<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2016/06/07/redis/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-11-07T04:08:17.000Z"><a href="/2015/11/07/zookeeper选举/">2015-11-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/11/07/zookeeper选举/">zookeeper选举</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>如何在zookeeper集群中选举出一个leader,zookeeper使用了三种算法,具体使用哪种算法,在配置文件中是可以配置的,对应的配置项是”electionAlg”,其中1对应的是LeaderElection算法,2对应的是AuthFastLeaderElection算法,3对应的是FastLeaderElection算法.默认使用FastLeaderElection算法.其他两种算法我没有研究过,就不多说了.</p>
+<p>要理解这个算法,最好需要一些paxos算法的理论基础.<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/11/07/zookeeper选举/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-09-07T03:32:52.000Z"><a href="/2015/09/07/第一个/">2015-09-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/07/第一个/">flume-kafka-storm-redis集群搭建</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>zookeeper3.4.8、kafka0.9.0.1、jdk8、flume1.6.0、storm0.9.6、redis3.2</p>
+<h2 id="配置flume"><a href="#配置flume" class="headerlink" title="配置flume"></a>配置flume</h2><h3 id="配置flume-conf-tomcat-conf"><a href="#配置flume-conf-tomcat-conf" class="headerlink" title="配置flume/conf/tomcat.conf"></a>配置flume/conf/tomcat.conf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">agent1.sources = ngrinder</span><br><span class="line">agent1.sources.ngrinder.type = exec</span><br><span class="line">agent1.sources.ngrinder.command = tail -F /data/boot/logcase/logcase.log</span><br><span class="line">agent1.sources.ngrinder.channels = mc1</span><br><span class="line"></span><br><span class="line">agent1.channels = mc1</span><br><span class="line">agent1.channels.mc1.type = memory</span><br><span class="line">agent1.channels.mc1.capacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sinks = avro-sink</span><br><span class="line">agent1.sinks.avro-sink.type = org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line">agent1.sinks.avro-sink.topic = mytopic</span><br><span class="line">agent1.sinks.avro-sink.brokerList = 127.0.0.1:9092</span><br><span class="line">agent1.sinks.avro-sink.requiredAcks = 1</span><br><span class="line">agent1.sinks.avro-sink.batchSize = 20</span><br><span class="line">agent1.sinks.avro-sink.channel = mc1</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/07/第一个/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-06-07T03:22:38.000Z"><a href="/2015/06/07/系统安全/">2015-06-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/06/07/系统安全/">系统安全</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="XSS攻击："><a href="#XSS攻击：" class="headerlink" title="XSS攻击："></a>XSS攻击：</h3><p>植入脚本</p>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>html代码转义    jstl标签   escapeXml 设置为true<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/06/07/系统安全/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-11-29T04:33:36.000Z"><a href="/2014/11/29/Keepalived/">2014-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/11/29/Keepalived/">Keepalived</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Keepalived的作用是检测web服务器的状态，如果有一台web服务器死机，或工作出现故障，Keepalived将检测到，并将有故障的web服务器从系统中剔除，当web服务器工作正常后Keepalived自动将web服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web服务器。<br>工作原理<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2014/11/29/Keepalived/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-08-17T04:30:56.000Z"><a href="/2014/08/17/事物的隔离级别/">2014-08-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/08/17/事物的隔离级别/">事物的隔离级别</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>数据库事务的隔离级别有4个，由低到高依次为Read uncommitted、Read committed、Repeatable read、Serializable，这四个级别可以逐个解决脏读、不可重复读、幻读这几类问题。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2014/08/17/事物的隔离级别/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-03-13T03:15:52.000Z"><a href="/2014/03/13/io/">2014-03-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/03/13/io/">io</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h2><p>缓存 I/O 又被称作标准 I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<p>缓存 I/O 的缺点：<br>数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2014/03/13/io/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-02-07T03:34:25.000Z"><a href="/2013/02/07/java碎碎念/">2013-02-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/02/07/java碎碎念/">java碎碎念</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="java多线程"><a href="#java多线程" class="headerlink" title="java多线程"></a>java多线程</h3><p>Java语言的关键字，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码。</p>
+<pre><code>一、当两个并发线程访问同一个对象object中的这个synchronized(this)同步代码块时，一个时间内只能有一个线程得到执行。另一个线程必须等待当前线程执行完这个代码块以后才能执行该代码块。
+
+二、然而，当一个线程访问object的一个synchronized(this)同步代码块时，另一个线程仍然可以访问该object中的非synchronized(this)同步代码块。
+
+三、尤其关键的是，当一个线程访问object的一个synchronized(this)同步代码块时，其他线程对object中所有其它synchronized(this)同步代码块的访问将被阻塞。
+
+四、第三个例子同样适用其它同步代码块。也就是说，当一个线程访问object的一个synchronized(this)同步代码块时，它就获得了这个object的对象锁。结果，其它线程对该object对象所有同步代码部分的访问都被暂时阻塞。
+
+五、以上规则对其它对象锁同样适用.
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2013/02/07/java碎碎念/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -177,13 +445,47 @@
   <h3 class="title">标签</h3>
   <ul class="entry">
   
+    <li><a href="/tags/CRSF攻击/">CRSF攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/DDos攻击/">DDos攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/Keepalived/">Keepalived</a><small>1</small></li>
+  
+    <li><a href="/tags/SQL注入攻击/">SQL注入攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/XSS攻击/">XSS攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/aio/">aio</a><small>1</small></li>
+  
+    <li><a href="/tags/bio/">bio</a><small>1</small></li>
+  
     <li><a href="/tags/flume/">flume</a><small>1</small></li>
+  
+    <li><a href="/tags/io/">io</a><small>1</small></li>
+  
+    <li><a href="/tags/java/">java</a><small>2</small></li>
   
     <li><a href="/tags/kafka/">kafka</a><small>1</small></li>
   
-    <li><a href="/tags/redis/">redis</a><small>1</small></li>
+    <li><a href="/tags/nio/">nio</a><small>2</small></li>
+  
+    <li><a href="/tags/redis/">redis</a><small>2</small></li>
   
     <li><a href="/tags/storm/">storm</a><small>1</small></li>
+  
+    <li><a href="/tags/zookeeper选举/">zookeeper选举</a><small>1</small></li>
+  
+    <li><a href="/tags/内存泄漏/">内存泄漏</a><small>1</small></li>
+  
+    <li><a href="/tags/多线程/">多线程</a><small>1</small></li>
+  
+    <li><a href="/tags/引用/">引用</a><small>1</small></li>
+  
+    <li><a href="/tags/文件上传漏洞/">文件上传漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/秒杀/">秒杀</a><small>1</small></li>
+  
+    <li><a href="/tags/隔离级别/">隔离级别</a><small>1</small></li>
   
   </ul>
 </div>

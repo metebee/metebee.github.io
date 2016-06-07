@@ -3,13 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>about | metebee</title>
+  <title>javanio | metebee</title>
   <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="Channel的实现 
+这些是Java NIO中最重要的通道的实现： 
+FileChannel：从文件中读写数据。DatagramChannel：能通过UDP读写网络中的数据。SocketChannel：能通过TCP读写网络中的数据。ServerSocketChannel：可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="about"/>
+  <meta property="og:title" content="javanio"/>
   <meta property="og:site_name" content="metebee"/>
 
   
@@ -45,26 +49,46 @@
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
   <div class="post-content">
     <header>
       
+        <div class="icon"></div>
+        <time datetime="2016-06-07T04:36:26.000Z"><a href="/2016/06/07/javanio/">2016-06-07</a></time>
+      
       
   
-    <h1 class="title">about</h1>
+    <h1 class="title">javanio</h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <p>Channel的实现 </p>
+<p>这些是Java NIO中最重要的通道的实现： </p>
+<p>FileChannel：从文件中读写数据。<br>DatagramChannel：能通过UDP读写网络中的数据。<br>SocketChannel：能通过TCP读写网络中的数据。<br>ServerSocketChannel：可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。<br><a id="more"></a></p>
+<p>Buffer的基本用法 </p>
+<p>使用Buffer读写数据一般遵循以下四个步骤： </p>
+<p>写入数据到Buffer<br>调用flip()方法<br>从Buffer中读取数据<br>调用clear()方法或者compact()方法</p>
+<p>当向buffer写入数据时，buffer会记录下写了多少数据。一旦要读取数据，需要通过flip()方法将Buffer从写模式切换到读模式。在读模式下，可以读取之前写入到buffer的所有数据。 </p>
+<p>一旦读完了所有的数据，就需要清空缓冲区，让它可以再次被写入。有两种方式能清空缓冲区：调用clear()或compact()方法。clear()方法会清空整个缓冲区。compact()方法只会清除已经读过的数据。任何未读的数据都被移到缓冲区的起始处，新写入的数据将放到缓冲区未读数据的后面。 </p>
+<p>Buffer的类型 </p>
+<p>Java NIO 有以下Buffer类型： </p>
+<p>ByteBuffer<br>MappedByteBuffer<br>CharBuffer<br>DoubleBuffer<br>FloatBuffer<br>IntBuffer<br>LongBuffer<br>ShortBuffer</p>
+<p>引：<a href="http://www.iteye.com/magazines/132-Java-NIO" target="_blank" rel="external">http://www.iteye.com/magazines/132-Java-NIO</a></p>
+
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/nio/">nio</a>, <a href="/tags/java/">java</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -105,7 +129,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://yoursite.com/about/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://yoursite.com/2016/06/07/javanio/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>

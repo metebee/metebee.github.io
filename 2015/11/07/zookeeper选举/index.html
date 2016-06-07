@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>zookeeper选举 | metebee</title>
+  <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="如何在zookeeper集群中选举出一个leader,zookeeper使用了三种算法,具体使用哪种算法,在配置文件中是可以配置的,对应的配置项是”electionAlg”,其中1对应的是LeaderElection算法,2对应的是AuthFastLeaderElection算法,3对应的是FastLeaderElection算法.默认使用FastLeaderElection算法.其他两种算法我没有研究过,就不多说了.
+要理解这个算法,最好需要一些paxos算法的理论基础.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="zookeeper选举"/>
+  <meta property="og:site_name" content="metebee"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="metebee" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">metebee</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-11-07T04:08:17.000Z"><a href="/2015/11/07/zookeeper选举/">2015-11-07</a></time>
+      
+      
+  
+    <h1 class="title">zookeeper选举</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>如何在zookeeper集群中选举出一个leader,zookeeper使用了三种算法,具体使用哪种算法,在配置文件中是可以配置的,对应的配置项是”electionAlg”,其中1对应的是LeaderElection算法,2对应的是AuthFastLeaderElection算法,3对应的是FastLeaderElection算法.默认使用FastLeaderElection算法.其他两种算法我没有研究过,就不多说了.</p>
+<p>要理解这个算法,最好需要一些paxos算法的理论基础.<br><a id="more"></a><br>1) 数据恢复阶段<br>首先,每个在zookeeper服务器先读取当前保存在磁盘的数据,zookeeper中的每份数据,都有一个对应的id值,这个值是依次递增的,换言之,越新的数据,对应的ID值就越大.</p>
+<p>2) 首次发送自己的投票值<br>在读取数据完毕之后,每个zookeeper服务器发送自己选举的leader,这个协议中包含了以下几部分的数据:<br>1)所选举leader的id(就是配置文件中写好的每个服务器的id) ,在初始阶段,每台服务器的这个值都是自己服务器的id,也就是它们都选举自己为leader.<br>2) 服务器最大数据的id,这个值大的服务器,说明存放了更新的数据.<br>3)逻辑时钟的值,这个值从0开始递增,每次选举对应一个值,也就是说:如果在同一次选举中,那么这个值应该是一致的 2)逻辑时钟值越大,说明这一次选举leader的进程更新.<br>4) 本机在当前选举过程中的状态,有以下几种:LOOKING,FOLLOWING,OBSERVING,LEADING,顾名思义不必解释了吧.</p>
+<p>每台服务器将自己服务器的以上数据发送到集群中的其他服务器之后,同样的也需要接收来自其他服务器的数据,它将做以下的处理:</p>
+<p>1) 如果所接收数据服务器的状态还是在选举阶段(LOOKING 状态),那么首先判断逻辑时钟值,又分为以下三种情况:<br>a) 如果发送过来的逻辑时钟大于目前的逻辑时钟,那么说明这是更新的一次选举,此时需要更新一下本机的逻辑时钟值,同时将之前收集到的来自其他服务器的选举清空,因为这些数据已经不再有效了.然后判断是否需要更新当前自己的选举情况.在这里是根据选举leader id,保存的最大数据id来进行判断的,这两种数据之间对这个选举结果的影响的权重关系是:首先看数据id,数据id大者胜出;其次再判断leader id,leader id大者胜出.然后再将自身最新的选举结果(也就是上面提到的三种数据广播给其他服务器).代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (n.epoch &gt; logicalclock) &#123;  </span><br><span class="line">logicalclock = n.epoch;  </span><br><span class="line">recvset.clear();  </span><br><span class="line">if(totalOrderPredicate(n.leader, n.zxid,getInitId(), getInitLastLoggedZxid()))  </span><br><span class="line">   updateProposal(n.leader, n.zxid);  </span><br><span class="line">else  </span><br><span class="line">updateProposal(getInitId(),getInitLastLoggedZxid());  </span><br><span class="line">  </span><br><span class="line">sendNotifications();</span><br></pre></td></tr></table></figure>
+<p>其中的totalOrderPredicate函数就是根据发送过来的封包中的leader id,数据id来与本机保存的相应数据进行判断的函数,返回true说明需要更新数据,于是调用updateProposal函数更新数据<br>b) 发送过来数据的逻辑时钟小于本机的逻辑时钟<br>说明对方在一个相对较早的选举进程中,这里只需要将本机的数据发送过去就是了</p>
+<p>c) 两边的逻辑时钟相同,此时也只是调用totalOrderPredicate函数判断是否需要更新本机的数据,如果更新了再将自己最新的选举结果广播出去就是了.</p>
+<p>实际上，在处理选票之前，还有一个预处理的动作，它发生在刚刚接收到关于vote的message的时候，具体过程如下：</p>
+<p>1.判断message的来源是不是observer，如果是，则告诉该observer我当前认为的Leader的信息，否则进入2<br>2.判断message是不是vote信息，是则进入3<br>3.根据message创建一张vote<br>4.如果当前server处理LOOKING状态，将vote放入自己的投票箱，而且如果vote源server处于LOOKING状态同时vote源server的选举时旧的，则当前server通知它新的一轮投票；<br>5如果当前server不处于LOOKING状态而vote源server处理LOOKING状态，则当前server告诉它当前的Leader信息。</p>
+<p>三种情况的处理完毕之后,再处理两种情况:</p>
+<p>1)服务器判断是不是已经收集到了所有服务器的选举状态,如果是那么根据选举结果设置自己的角色(FOLLOWING还是LEADER),然后退出选举过程就是了.</p>
+<p>2)即使没有收集到所有服务器的选举状态,也可以判断一下根据以上过程之后最新的选举leader是不是得到了超过半数以上服务器的支持,如果是,那么尝试在200ms内接收一下数据,如果没有新的数据到来,说明大家都已经默认了这个结果,同样也设置角色退出选举过程.<br>代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">if(self.getVotingView().containsKey(n.sid))&#123;  </span><br><span class="line">recvset.put(n.sid, new Vote(n.leader, n.zxid, n.epoch));  </span><br><span class="line">  </span><br><span class="line">//If have received from all nodes, then terminate  </span><br><span class="line">if((self.getVotingView().size() == recvset.size()) &amp;&amp; (self.getQuorumVerifier().getWeight(proposedLeader) != 0))&#123;  </span><br><span class="line">self.setPeerState((proposedLeader == self.getId()) ? ServerState.LEADING: learningState());  </span><br><span class="line">leaveInstance();  </span><br><span class="line">return new Vote(proposedLeader, proposedZxid);  </span><br><span class="line">  </span><br><span class="line">&#125; else if (termPredicate(recvset,new Vote(proposedLeader, proposedZxid,logicalclock))) &#123;  </span><br><span class="line">  </span><br><span class="line">// Verify if there is any change in the proposed leader  </span><br><span class="line">while((n = recvqueue.poll(finalizeWait,TimeUnit.MILLISECONDS)) != null)&#123;  </span><br><span class="line">if(totalOrderPredicate(n.leader, n.zxid,proposedLeader, proposedZxid))&#123;  </span><br><span class="line">   recvqueue.put(n);  </span><br><span class="line">   break;  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">/* </span><br><span class="line">* This predicate is true once we don&apos;t read any new </span><br><span class="line">* relevant message from the reception queue </span><br><span class="line">*/  </span><br><span class="line">if (n == null) &#123;  </span><br><span class="line">self.setPeerState((proposedLeader == self.getId()) ? ServerState.LEADING: learningState());  </span><br><span class="line">if(LOG.isDebugEnabled())&#123;  </span><br><span class="line">LOG.debug(&quot;About to leave FLE instance: Leader= &quot; + proposedLeader + &quot;, Zxid = &quot; + proposedZxid + &quot;, My id = &quot; + self.getId() + &quot;, My state = &quot; + self.getPeerState());  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">leaveInstance();  </span><br><span class="line">return new Vote(proposedLeader,proposedZxid);  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2) 如果所接收服务器不在选举状态,也就是在FOLLOWING或者LEADING状态<br>做以下两个判断:<br>a) 如果逻辑时钟相同,将该数据保存到recvset,如果所接收服务器宣称自己是leader,那么将判断是不是有半数以上的服务器选举它,如果是则设置选举状态退出选举过程<br>b) 否则这是一条与当前逻辑时钟不符合的消息,那么说明在另一个选举过程中已经有了选举结果,于是将该选举结果加入到outofelection集合中,再根据outofelection来判断是否可以结束选举,如果可以也是保存逻辑时钟,设置选举状态,退出选举过程.<br>代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if(n.epoch == logicalclock)&#123;  </span><br><span class="line">recvset.put(n.sid, new Vote(n.leader, n.zxid, n.epoch));  </span><br><span class="line">if((n.state == ServerState.LEADING) || (termPredicate(recvset, new Vote(n.leader,n.zxid, n.epoch, n.state))&amp;&amp; checkLeader(outofelection, n.leader, n.epoch)) )&#123;  </span><br><span class="line">self.setPeerState((n.leader == self.getId()) ?ServerState.LEADING: learningState());  </span><br><span class="line">leaveInstance();  </span><br><span class="line">return new Vote(n.leader, n.zxid);  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">outofelection.put(n.sid, new Vote(n.leader, n.zxid, n.epoch, n.state));  </span><br><span class="line">  </span><br><span class="line">if(termPredicate(outofelection, new Vote(n.leader,n.zxid, n.epoch, n.state))&amp;&amp; checkLeader(outofelection, n.leader, n.epoch)) &#123;  </span><br><span class="line">   synchronized(this)&#123;  </span><br><span class="line">      logicalclock = n.epoch;  </span><br><span class="line">      self.setPeerState((n.leader == self.getId()) ? ServerState.LEADING: learningState());  </span><br><span class="line">   &#125;  </span><br><span class="line">   leaveInstance();  </span><br><span class="line">   return new Vote(n.leader, n.zxid);  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">break;  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以一个简单的例子来说明整个选举的过程.<br>假设有五台服务器组成的zookeeper集群,它们的id从1-5,同时它们都是最新启动的,也就是没有历史数据,在存放数据量这一点上,都是一样的.假设这些服务器依序启动,来看看会发生什么.</p>
+<p><code>1) 服务器1启动,此时只有它一台服务器启动了,它发出去的报没有任何响应,所以它的选举状态一直是LOOKING状态  
+2) 服务器2启动,它与最开始启动的服务器1进行通信,互相交换自己的选举结果,由于两者都没有历史数据,所以id值较大的服务器2胜出,但是由于没有达到超过半数以上的服务器都同意选举它(这个例子中的半数以上是3),所以服务器1,2还是继续保持LOOKING状态.  
+3) 服务器3启动,根据前面的理论分析,服务器3成为服务器1,2,3中的老大,而与上面不同的是,此时有三台服务器选举了它,所以它成为了这次选举的leader.  
+4) 服务器4启动,根据前面的分析,理论上服务器4应该是服务器1,2,3,4中最大的,但是由于前面已经有半数以上的服务器选举了服务器3,所以它只能接收当小弟的命了.  
+5) 服务器5启动,同4一样,当小弟.</code>送过来的逻辑时钟大于目前的逻辑时钟,那么说明这是更新的一次选举,此时需要更新一下本机的逻辑时钟值,同时将之前收集到的来自其他服务器的选举清空,因为这些数据已经不再有效了.然后判断是否需要更新当前自己的选举情况.在这里是根据选举leader id,保存的最大数据id来进行判断的,这两种数据之间对这个选举结果的影响的权重关系是:首先看数据id,数据id大者胜出;其次再判断leader id,leader id大者胜出.然后再将自身最新的选举结果(也就是上面提到的三种数据广播给其他服务器).代码如下:</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/zookeeper选举/">zookeeper选举</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://yoursite.com/2015/11/07/zookeeper选举/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/CRSF攻击/">CRSF攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/DDos攻击/">DDos攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/Keepalived/">Keepalived</a><small>1</small></li>
+  
+    <li><a href="/tags/SQL注入攻击/">SQL注入攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/XSS攻击/">XSS攻击</a><small>1</small></li>
+  
+    <li><a href="/tags/aio/">aio</a><small>1</small></li>
+  
+    <li><a href="/tags/bio/">bio</a><small>1</small></li>
+  
+    <li><a href="/tags/flume/">flume</a><small>1</small></li>
+  
+    <li><a href="/tags/io/">io</a><small>1</small></li>
+  
+    <li><a href="/tags/java/">java</a><small>2</small></li>
+  
+    <li><a href="/tags/kafka/">kafka</a><small>1</small></li>
+  
+    <li><a href="/tags/nio/">nio</a><small>2</small></li>
+  
+    <li><a href="/tags/redis/">redis</a><small>2</small></li>
+  
+    <li><a href="/tags/storm/">storm</a><small>1</small></li>
+  
+    <li><a href="/tags/zookeeper选举/">zookeeper选举</a><small>1</small></li>
+  
+    <li><a href="/tags/内存泄漏/">内存泄漏</a><small>1</small></li>
+  
+    <li><a href="/tags/多线程/">多线程</a><small>1</small></li>
+  
+    <li><a href="/tags/引用/">引用</a><small>1</small></li>
+  
+    <li><a href="/tags/文件上传漏洞/">文件上传漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/秒杀/">秒杀</a><small>1</small></li>
+  
+    <li><a href="/tags/隔离级别/">隔离级别</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 zhang dong
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

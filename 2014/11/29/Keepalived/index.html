@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   
-  <title>about | metebee</title>
+  <title>Keepalived | metebee</title>
   <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="Keepalived的作用是检测web服务器的状态，如果有一台web服务器死机，或工作出现故障，Keepalived将检测到，并将有故障的web服务器从系统中剔除，当web服务器工作正常后Keepalived自动将web服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web服务器。工作原理">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="about"/>
+  <meta property="og:title" content="Keepalived"/>
   <meta property="og:site_name" content="metebee"/>
 
   
@@ -45,26 +47,38 @@
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
   <div class="post-content">
     <header>
       
+        <div class="icon"></div>
+        <time datetime="2014-11-29T04:33:36.000Z"><a href="/2014/11/29/Keepalived/">2014-11-29</a></time>
+      
       
   
-    <h1 class="title">about</h1>
+    <h1 class="title">Keepalived</h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <p>Keepalived的作用是检测web服务器的状态，如果有一台web服务器死机，或工作出现故障，Keepalived将检测到，并将有故障的web服务器从系统中剔除，当web服务器工作正常后Keepalived自动将web服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web服务器。<br>工作原理<br><a id="more"></a><br>Layer3,4&amp;7工作在IP/TCP协议栈的IP层，TCP层，及应用层,原理分别如下：</p>
+<p>Layer3：Keepalived使用Layer3的方式工作式时，Keepalived会定期向服务器群中的服务器发送一个ICMP的数据包（既我们平时用的Ping程序）,如果发现某台服务的IP地址没有激活，Keepalived便报告这台服务器失效，并将它从服务器群中剔除，这种情况的典型例子是某台服务器被非法关机。Layer3的方式是以服务器的IP地址是否有效作为服务器工作正常与否的标准。</p>
+<p>Layer4:如果您理解了Layer3的方式，Layer4就容易了。Layer4主要以TCP端口的状态来决定服务器工作正常与否。如web server的服务端口一般是80，如果Keepalived检测到80端口没有启动，则Keepalived将把这台服务器从服务器群中剔除。</p>
+<p>Layer7：Layer7就是工作在具体的应用层了，比Layer3,Layer4要复杂一点，在网络上占用的带宽也要大一些。Keepalived将根据用户的设定检查服务器程序的运行是否正常，如果与用户的设定不相符，则Keepalived将把服务器从服务器群中剔除。</p>
+
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/Keepalived/">Keepalived</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -105,7 +119,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://yoursite.com/about/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://yoursite.com/2014/11/29/Keepalived/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>

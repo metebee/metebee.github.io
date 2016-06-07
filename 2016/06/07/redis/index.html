@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   
-  <title>about | metebee</title>
+  <title>redis | metebee</title>
   <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="Redis实现分布式锁思路　　　　思路很简单，主要用到的redis函数是setnx()，这个应该是实现分布式锁最主要的函数。首先是将某一任务标识名（这里用Lock:order作为标识名的例子）作为键存到redis里，并为其设个过期时间，如果是还有Lock:order请求过来，先是通过setnx()看看是否能将Lock:order插入到redis里，可以的话就返回true，不可以就返回false。当然，在我的代码里会比这个思路复杂一些，我会在分析代码时进一步说明。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="about"/>
+  <meta property="og:title" content="redis"/>
   <meta property="og:site_name" content="metebee"/>
 
   
@@ -45,26 +47,43 @@
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
   <div class="post-content">
     <header>
       
+        <div class="icon"></div>
+        <time datetime="2016-06-07T04:25:45.000Z"><a href="/2016/06/07/redis/">2016-06-07</a></time>
+      
       
   
-    <h1 class="title">about</h1>
+    <h1 class="title">redis</h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <h2 id="Redis实现分布式锁思路"><a href="#Redis实现分布式锁思路" class="headerlink" title="Redis实现分布式锁思路"></a>Redis实现分布式锁思路</h2><p>　　　　思路很简单，主要用到的redis函数是setnx()，这个应该是实现分布式锁最主要的函数。首先是将某一任务标识名（这里用Lock:order作为标识名的例子）作为键存到redis里，并为其设个过期时间，如果是还有Lock:order请求过来，先是通过setnx()看看是否能将Lock:order插入到redis里，可以的话就返回true，不可以就返回false。当然，在我的代码里会比这个思路复杂一些，我会在分析代码时进一步说明。<br><a id="more"></a></p>
+<h2 id="Redis实现任务队列"><a href="#Redis实现任务队列" class="headerlink" title="Redis实现任务队列"></a>Redis实现任务队列</h2><p>　　　　这里的实现会用到上面的Redis分布式的锁机制，主要是用到了Redis里的有序集合这一数据结构。例如入队时，通过zset的add()函数进行入队，而出对时，可以用到zset的getScore()函数。另外还可以弹出顶部的几个任务。</p>
+<p>　　以上就是实现 分布式锁 和 任务队列 的简单思路，如果你看完有点模棱两可，那请看接下来的代码实现。
+　　
+　　</p>
+<h2 id="redis漏洞"><a href="#redis漏洞" class="headerlink" title="redis漏洞"></a>redis漏洞</h2><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h3 id="临时解决方案"><a href="#临时解决方案" class="headerlink" title="临时解决方案"></a>临时解决方案</h3><p>配置bind选项, 限定可以连接Redis服务器的IP, 并修改redis的默认端口6379.</p>
+<p>配置AUTH, 设置密码, 密码会以明文方式保存在redis配置文件中.</p>
+<p>配置rename-command CONFIG “RENAME_CONFIG”, 这样即使存在未授权访问, 也能够给攻击者使用config指令加大难度</p>
+<p>好消息是Redis作者表示将会开发”real user”，区分普通用户和admin权限，普通用户将会被禁止运行某些命令，如config</p>
+
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/redis/">redis</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -105,7 +124,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://yoursite.com/about/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://yoursite.com/2016/06/07/redis/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>

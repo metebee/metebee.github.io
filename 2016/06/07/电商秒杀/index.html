@@ -3,13 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>about | metebee</title>
+  <title>电商秒杀 | metebee</title>
   <meta name="author" content="zhang dong">
+  
+  <meta name="description" content="活跃用户处理机制   将过载保护设置在CGI入口层
+随心所欲
+当我们的用户量逐步上升，系统依然出现吃紧和性能跟不上的阶段。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="about"/>
+  <meta property="og:title" content="电商秒杀"/>
   <meta property="og:site_name" content="metebee"/>
 
   
@@ -45,26 +49,49 @@
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="page">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
   <div class="post-content">
     <header>
       
+        <div class="icon"></div>
+        <time datetime="2016-06-07T04:38:43.000Z"><a href="/2016/06/07/电商秒杀/">2016-06-07</a></time>
+      
       
   
-    <h1 class="title">about</h1>
+    <h1 class="title">电商秒杀</h1>
   
 
     </header>
     <div class="entry">
       
-        
+        <p>活跃用户处理机制   将过载保护设置在CGI入口层</p>
+<p>随心所欲</p>
+<p>当我们的用户量逐步上升，系统依然出现吃紧和性能跟不上的阶段。<br><a id="more"></a><br>这个时候，我们大量使用一致性Hash和随机算法，其中过程就变成了。</p>
+<p>将秒杀的产品ID分成多个队列放在Redis集群上，然后将一个产品总数量放在一个Redis上（这个Redis是瓶颈，但是基本上20W的TPS满满的达到了）</p>
+<p>为用户随机一个数字，在一定范围内，直接告诉秒杀失败（纯看运气，纯丢给应用服务器去玩了）</p>
+<p>检查用户规则和用户积分，还有产品总数量，总数量为0，直接结束。</p>
+<p>为用户随机一个产品ID队列，尝试pop，pop不出数据，直接结束（还是看运气）</p>
+<p>更新用户Redis的缓存和产品总数量的缓存（decr），然后交给RabbitMQ和消费者慢慢处理。</p>
+<p>这个时候，基本上30wTPS，随便玩。</p>
+<p>返璞归真</p>
+<p>说了这么多废话，总结下吧。对于秒杀这种业务，优先保稳定和正确，最后才能保服务量。不稳定没得玩，不正确，很可能一单亏死。技术上，我个人认为小厂也能做看似很NB的秒杀只要用好以下几个相关技术：</p>
+<p>削峰，不管是随机丢弃，还是多层筛选，尽可能减少进入核心业务的用户数</p>
+<p>排队，在秒杀场景下，排队不单单可以减少系统压力，还能保证正确性</p>
+<p>分区，使用分区可以降低一个节点当机带来整体性的损害或者雪崩性的系统不可用</p>
+<p>最终一致，很多时候，不一定要强一致性，只要能保证最后数据的正确，哪怕是手工修复，都能带来大规模的性能提升</p>
+
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/秒杀/">秒杀</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -105,7 +132,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://yoursite.com/about/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://yoursite.com/2016/06/07/电商秒杀/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>
